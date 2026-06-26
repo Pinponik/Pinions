@@ -1,5 +1,5 @@
 [workspace]
-members = ["pincers", "examples/window"]
+members = ["pincers", "pincers/pincers-macros", "examples/window"]
 resolver = "2"
 
 

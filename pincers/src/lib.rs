@@ -1,17 +1,28 @@
+pub use pincers_macros;
 pub use winit;
+use winit::{
+    application::ApplicationHandler,
+    event::WindowEvent,
+    event_loop::{ActiveEventLoop, ControlFlow, EventLoop},
+    window::{Window, WindowId},
+};
 
 pub struct App {
+    window: Option<Window>,
     title: String,
+    poll: bool,
 }
 
 impl App {
-    pub fn new(title: &str) -> Self {
+    pub fn new() -> Self {
         Self {
-            title: title.to_string(),
+            window: None,
+            title: String::new(),
+            poll: false,
         }
     }
 
-    pub fn run(&self) {
-        println!("GUI '{}' started from lib Pincers!", self.title);
+    pub fn default() -> Self {
+        Self::new()
     }
 }

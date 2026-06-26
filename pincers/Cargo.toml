@@ -12,3 +12,4 @@ license = "MIT OR Apache-2.0"
 
 [dependencies]
 winit = "0.30.13"
+pincers-macros = { path = "pincers-macros" }
