@@ -1,0 +1,50 @@
+name: DCO Verification Bot
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  dco_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout of the code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify DCO
+        id: check-dco
+        uses: cpanato/dco-check-action@main
+        continue-on-error: true
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bot publishes fix instruction
+        if: steps.check-dco.outcome == 'failure'
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            ### DCO Bot: Detected missing Developer Certificate of Origin signature!
+            Your commits are missing the required `Signed-off-by` line. Our project requires this for legal reasons.
+
+            #### How to fix this in 1 minute?
+            Open a terminal in your project and enter the following commands:
+            ```bash
+            # 1. Add automatic sign-off to the last commit
+            git commit --amend --no-edit -s
+
+            # 2. Push the corrected commit forcing PR update
+            git push --force-with-lease
+            ```
+            _Tip for the future: Always create commits with the `-s` flag (e.g. `git commit -s -m "Your description"`)_.
+
+      - name: Officially mark test as failed
+        if: steps.check-dco.outcome == 'failure'
+        run: |
+          echo "DCO verification failed. Check the robot's comment in the Pull Request."
+          exit 1
